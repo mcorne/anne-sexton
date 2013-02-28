@@ -1,0 +1,35 @@
+<!--
+    Poems of Anne Sexton
+
+    HTML template of a blog message where the table of contents is stored
+
+    @author    Michel Corne <mcorne@yahoo.com>
+    @copyright 2013 Michel Corne
+    @license   http://www.opensource.org/licenses/gpl-3.0.html GNU GPL v3
+    @link      http://anne-sexton.blogspot.com
+-->
+
+<!--
+  Poems of Anne Sexton
+  Table of contents
+
+  Generated %s
+
+  @copyright %d Michel Corne
+  @license   http://www.opensource.org/licenses/gpl-3.0.html GNU GPL v3
+-->
+
+<div>
+Titres des poèmes (<a id="as-display-french"  href="javascript:hideElt('as-display-french'); displayElt('as-hide-french'); displayElt('as-french-table')">afficher</a><a id="as-hide-french" href="javascript:hideElt('as-hide-french'); displayElt('as-display-french'); hideElt('as-french-table')" style="display:none">cacher</a>)
+
+<table id="as-french-table" style="display:none" class="as-toc">
+%s</table>
+</div>
+
+<div>
+Titres en anglais (<a id="as-display-english"  href="javascript:hideElt('as-display-english'); displayElt('as-hide-english'); displayElt('as-english-table')">afficher</a><a id="as-hide-english" href="javascript:hideElt('as-hide-english'); displayElt('as-display-english'); hideElt('as-english-table')" style="display:none">cacher</a>)
+
+<table class="notranslate" id="as-english-table" style="display:none" class="as-toc">
+%s
+</table>
+</div>
