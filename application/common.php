@@ -13,7 +13,8 @@
 require_once 'String.php';
 
 define('FORMAT_ANCHORED_WORD'     , '~\|(.+?)\|(https?://.+?)\|~');
-define('FORMAT_NOTE_REFERENCE'    , '~ *(#\d+[a-z]?)~');
+define('FORMAT_NOTE_DEFINITION'   , '~(#\d+[a-z]?): +~m');
+define('FORMAT_NOTE_REFERENCE'    , '~ +(#\d+[a-z]?)~');
 define('FORMAT_OTHER_TRANSLATIONS', '~\{(.+?), *(.+?)\}~');
 
 /**

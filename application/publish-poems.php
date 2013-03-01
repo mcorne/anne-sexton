@@ -188,7 +188,7 @@ function make_english_verse($verse, $is_note)
 function make_french_verse($verse, $url, $note_prefix, $is_note)
 {
     $verse = fix_non_breaking_spaces($verse);
-    $verse = make_note_references($verse, $url, $note_prefix, $is_note);
+    $verse = make_note_references($verse, $url, $note_prefix, $is_note, true);
     $verse = make_other_translations($verse);
     check_no_unprocessed_special_characters($verse);
 
@@ -248,7 +248,7 @@ function make_line($line, $url, $note_prefix)
  */
 function make_line_notes($notes, $url, $note_prefix)
 {
-    $pieces = preg_split('~(#\d+[a-z]?): +~m', $notes, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $pieces = preg_split(FORMAT_NOTE_DEFINITION, $notes, -1, PREG_SPLIT_DELIM_CAPTURE);
     array_shift($pieces);
 
     if (empty($pieces)) {
@@ -395,7 +395,7 @@ function make_note($note_number, $note_text, $url, $note_prefix)
     static $template = '<tr><td><a class="as-note-number" href="%1$s#%2$s-note-ref-%3$d" id="%2$s-note-text-%3$d">%3$d</a></td> <td>%4$s</td></tr>';
 
     $note_number = fix_note_number($note_number, true);
-    $note_text = make_note_references($note_text, $url, $note_prefix, false);
+    $note_text = make_note_references($note_text, $url, $note_prefix, false, false);
     $note_text = fix_string($note_text);
     $note_text = sprintf($template, $url, $note_prefix, $note_number, $note_text);
 
@@ -435,13 +435,16 @@ function make_notes($poem, $note_prefix)
  * @param string $note_number
  * @param string $url
  * @param string $note_prefix
+ * @param bool   $in_verse
  * @return string
  */
-function make_note_reference($note_number, $url, $note_prefix)
+function make_note_reference($note_number, $url, $note_prefix, $in_verse)
 {
-    static $template = '<span class="as-note-ref"> <a href="%1$s#%2$s-note-text-%3$d" id="%2$s-note-ref-%3$d">%3$d</a></span>';
+    static $note_in_verse_template = '<span class="as-note-ref"> <a href="%1$s#%2$s-note-text-%3$d" id="%2$s-note-ref-%3$d">%3$d</a></span>';
+    static $note_in_note_template  = ' <a href="%1$s#%2$s-note-text-%3$d">%3$d</a>';
 
     $note_number = fix_note_number($note_number, false);
+    $template = $in_verse? $note_in_verse_template : $note_in_note_template;
 
     return sprintf($template, $url, $note_prefix, $note_number);
 }
@@ -453,14 +456,13 @@ function make_note_reference($note_number, $url, $note_prefix)
  * @param string $url
  * @param string $note_prefix
  * @param bool $is_note
+ * @param bool $in_verse
  * @throws Exception
  * @return string
  */
-function make_note_references($verse, $url, $note_prefix, $is_note)
+function make_note_references($verse, $url, $note_prefix, $is_note, $in_verse)
 {
-    static $template = '<span class="as-note-ref"> <a href="%1$s#%2$s-note-text-%3$d" id="%2$s-note-ref-%3$d">%3$d</a></span>';
-
-    if (! preg_match_all(FORMAT_NOTE_REFERENCE, $verse, $matches)) {
+    if (! preg_match_all(FORMAT_NOTE_REFERENCE, $verse, $matches, PREG_SET_ORDER)) {
         if ($is_note) {
             throw new Exception("expecting reference in: $verse");
         } else {
@@ -468,9 +470,10 @@ function make_note_references($verse, $url, $note_prefix, $is_note)
         }
     }
 
-    foreach($matches[1] as $note_number) {
-        $note_reference = make_note_reference($note_number, $url, $note_prefix);
-        $verse = str_replace($note_number, $note_reference, $verse);
+    foreach($matches as $match) {
+        list($untrimmed_note_number, $note_number) = $match;
+        $note_reference = make_note_reference($note_number, $url, $note_prefix, $in_verse);
+        $verse = str_replace($untrimmed_note_number, $note_reference, $verse);
     }
 
     return $verse;

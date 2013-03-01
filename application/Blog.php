@@ -138,9 +138,6 @@ class Blog
         }
 
         foreach($this->_feeds[$uri]->entries as $entry) {
-            $a = $entry->getTitleValue(); // TODO: remove
-            $b = $entry->getAlternateLink()->href; // TODO: remove
-
             if ($entry->getTitleValue() == $titleOrUrl or $entry->getAlternateLink()->href == $titleOrUrl) {
                 // the message was found by its title or URL
                 $idText = explode('-', $entry->id->text);
