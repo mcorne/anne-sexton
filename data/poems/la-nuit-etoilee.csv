@@ -14,14 +14,14 @@ strophe	The town does not exist	La ville #4 n'existe pas	#4: « La ville » ({th
 	Oh starry starry night! This is how	Oh, nuit étoilée, si étoilée #9 ! C'est ainsi que	#9: « Nuit étoilée, si étoilée » traduit au mieux la |palilogie|http://fr.wikipedia.org/wiki/Palilogie| « {starry starry night} » avec l'ajout du mot « si », en améliorant la fluidité sans vraiment en changer l'intensité.
 	I want to die.	je veux mourir #10.	#10: Sexton s'identifie à la femme qui s'est noyée. « C'est ainsi que/je veux mourir » ({this is how/I want to die}) apparaît comme l'issue naturelle à cette idéalisation du suicide telle que Sexton la décrit dans chaque strophe.
 			
-	It moves. They are all alive.	Ça bouge. Elles sont toutes vivantes.	
+strophe	It moves. They are all alive.	Ça bouge. Elles sont toutes vivantes.	
 	Even the moon bulges in its orange irons	Même la lune enfle dans ses fers orange #11	#11: La « lune » ({moon}) est entourée d'un halo formé de cercles concentriques jaune orangé, et semble donc emprisonnée dans « ses fers orange » ({its orange irons}). Pourtant, elle « enfle » ({bulges}) comme si elle était enceinte (voir la note #12). Le mot « fers » peut désigner aussi les instruments pour boucler ou lisser les cheveux : « le fer à cheveux » ({hair iron}). La lune s'est peut-être faite belle pour l'occasion. Notez que la lune est du genre neutre en anglais, mais souvent utilisée au féminin de façon figurative comme en poésie.
 	to push children, like a god, from its eye.	pour pousser les enfants #12, comme un dieu, hors de son œil.	#12: La lune « pousse les enfants » ({push children}), que sont les étoiles, à qui elle vient de donner naissance. Ce ciel de nuit étoilé est le siège d'un acte de création d'ordre divin.
 	The old unseen serpent swallows up the stars.	Le vieux serpent, passant inaperçu, engloutit les étoiles #13.	#13: « Le vieux serpent, passant inaperçu » traduit au mieux « {the old unseen serpent} ». Le serpent est bien visible dans le ciel avec sa forme de tourbillon allongé, mais il est - littéralement - « non vu » ({unseen}) ou inaperçu. Le serpent est « vieux » ({old}), alors il se contente de prendre la vie, contrairement à la lune qui la donne. Il « engloutit les étoiles » ({swallows up the stars}), par opposition à la lune qui les engendre. Le serpent représente la mort qui rode sournoisement. Le ciel de la nuit est donc aussi le siège du jeu de la vie et de la mort.
 	Oh starry starry night! This is how	Oh, nuit étoilée, si étoilée ! C'est ainsi que	
 	I want to die:	je veux mourir :	
 			
-	into that rushing beast of the night,	à l’intérieur de cette bête #14 surgissant dans la nuit #15,	"#14: Sexton désire être aspirée « à l'intérieur de cette bête » ({into that [...] beast}), comme si elle allait revenir à un état prénatal à l’intérieur d'un ventre. Le suicide serait alors une sorte de renaissance.
+strophe	into that rushing beast of the night,	à l’intérieur de cette bête #14 surgissant dans la nuit #15,	"#14: Sexton désire être aspirée « à l'intérieur de cette bête » ({into that [...] beast}), comme si elle allait revenir à un état prénatal à l’intérieur d'un ventre. Le suicide serait alors une sorte de renaissance.
 #15: « Cette bête surgissant dans la nuit » traduit au mieux « {that rushing beast of the night} ». La bête appartient au monde de la nuit, dont elle surgit."
 	sucked up by that great dragon, to split	aspirée par ce grand dragon, pour me séparer	
 	from my life with no flag,	de ma vie avec ni drapeau #16,	#16: Le « drapeau  » ({flag}) représente la reconnaissance des autres, dont Sexton n'aurait pas besoin car cette mort serait comme un combat solitaire.
@@ -36,6 +36,6 @@ url	2011/04/la-nuit-etoilee.html
 image-src	https://lh5.googleusercontent.com/-l2KsQOfvPMc/TbKvGaCRtuI/AAAAAAAAC8c/SyYr7OpK09w/s144/van-gogh-starry-night.jpg		
 image-href	https://picasaweb.google.com/lh/photo/IbIOmC-CRdSCY-dDyqwJuNMTjNZETYmyPJy0liipFm0?feat=directlink		
 			
-other	Analyse en anglais	"|{Picture Analysis of ‘Starry Night’ by Vincent van Gogh}|http://www.degree-essays.com/coursework/art-essays/picture-analysis-of-starry-night-by-vincent-van-gogh/|, degree-essays.com
+other	Autres ressources	"|{Picture Analysis of ‘Starry Night’ by Vincent van Gogh}|http://www.degree-essays.com/coursework/art-essays/picture-analysis-of-starry-night-by-vincent-van-gogh/|, degree-essays.com
 Johannes van der Wolk. |Vincent Van Gogh, {Paintings}|http://www.artchive.com/artchive/V/van_gogh/starry_night_text.jpg.html|, Rizzoli, 1990, artchive.com
 Jansen, Luijten, Bakker. |Vincent Van Gogh, {The Letters}|http://vangoghletters.org/vg/|, 2009, vangoghletters.org"	

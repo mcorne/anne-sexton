@@ -80,6 +80,6 @@ function make_tables_of_contents($poems)
         date('c'), // generation date/time
         date('Y'), // copyright year
         $french_table_of_contents,
-        $french_table_of_contents
+        $english_table_of_contents
     );
 }

@@ -1,5 +1,4 @@
 Things to do
 ------------
 
-- add previously translated poems
 - leave table of contents open/close accross browser session

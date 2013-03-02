@@ -47,7 +47,7 @@ function add_domain_to_urls($poems)
 {
     foreach($poems as &$poem) {
         if (empty($poem['url']['english'])) {
-            throw new Exception('missing blog message URL in a poem');
+            throw new Exception('missing blog message URL in: ' . $poem['basename']);
         }
 
         $poem['url']['english'] = add_domain_to_url($poem['url']['english']);
@@ -141,18 +141,17 @@ function get_poems()
 }
 
 /**
- * Indexes an array of rows with one of the keys
- *
- * The key is meant to be a column file header.
+ * Indexes an array of rows with the values of a given column
  *
  * @param array  $rows               the array of rows, each row being an associative array,
  *                                   one of the keys must be set to the column name
  * @param string $column_header      the name of the key or column header
+ * @param string $basename           the file base name
  * @param array  $non_unique_indexes non unique indexes, eg "strophe"
  * @throws Exception
  * @return array                     the associative array of rows
  */
-function index_rows($rows, $column_header, $non_unique_indexes = null)
+function index_rows($rows, $column_header, $basename, $non_unique_indexes = null)
 {
     settype($non_unique_indexes, 'array');
 
@@ -161,7 +160,7 @@ function index_rows($rows, $column_header, $non_unique_indexes = null)
 
     foreach($rows as $row) {
         if (! isset($row[$column_header])) {
-            throw new Exception("missing column $column_header");
+            throw new Exception("missing column $column_header in: $basename");
         }
 
         // eg indexes by type
@@ -169,7 +168,7 @@ function index_rows($rows, $column_header, $non_unique_indexes = null)
 
         if (empty($index)) {
             if (is_null($current_index)) {
-                throw new Exception('missing index/type');
+                throw new Exception("missing index/type in: $basename");
             }
 
             // adds the row, typically the second line of a strophe and so on
@@ -193,7 +192,7 @@ function index_rows($rows, $column_header, $non_unique_indexes = null)
 
         } else if (isset($indexed_rows[$index])) {
             // eg the title may be defined only once
-            throw new Exception("index already used: $index");
+            throw new Exception("index already used: $index in: $basename");
 
         } else {
             $indexed_rows[$index] = $row;
@@ -226,9 +225,9 @@ function load_template($basename)
  */
 function parse_file($filename)
 {
-    $content = read_csv($filename, 'type', array('introduction', 'other', 'strophe'));
+    $rows = read_csv($filename, 'type', array('introduction', 'other', 'strophe'));
 
-    return $content;
+    return $rows;
 }
 
 /**
@@ -240,7 +239,7 @@ function parse_files()
 {
     $filenames = glob(__DIR__ . "/../data/poems/*.csv");
 
-    return array_map('parse_file', $filenames);
+    return @array_map('parse_file', $filenames);
 }
 
 /**
@@ -255,6 +254,7 @@ function parse_files()
 function read_csv($filename, $column_header = null, $non_unique_indexes = null)
 {
     $content = read_file($filename);
+    $basename = basename($filename);
 
     $content = fix_line_endings($content);
     $content = replace_line_breaks_in_cells($content);
@@ -274,8 +274,11 @@ function read_csv($filename, $column_header = null, $non_unique_indexes = null)
     }
 
     if (isset($column_header)) {
-        $rows = index_rows($rows, $column_header, $non_unique_indexes);
+        $rows = index_rows($rows, $column_header, $basename, $non_unique_indexes);
     }
+
+    // saves the file base name that is used primarily for error reporting
+    $rows['basename'] = $basename;
 
     return $rows;
 }
@@ -453,7 +456,7 @@ function sort_poems_by_title($poems, $language)
 
     foreach($poems as $poem) {
         if (empty($poem['title'][$language])) {
-            throw new Exception('missing title in a poem');
+            throw new Exception('missing title in: ' . $poem['basename']);
         }
 
         $title = $string->utf8toASCII($poem['title'][$language]);

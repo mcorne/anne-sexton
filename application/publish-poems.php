@@ -336,8 +336,8 @@ function make_message($poems, $number)
         $french_introduction  . $french_verses,
         $english_introduction . $english_verses,
         $notes,
-        $poem['source']['english'],
-        $poem['source']['french'],
+        fix_string($poem['source']['english']),
+        fix_string($poem['source']['french']),
         $other_sources,
         $previous_poem,
         $next_poem
@@ -441,7 +441,7 @@ function make_notes($poem, $note_prefix)
 function make_note_reference($note_number, $url, $note_prefix, $in_verse)
 {
     static $note_in_verse_template = '<span class="as-note-ref"> <a href="%1$s#%2$s-note-text-%3$d" id="%2$s-note-ref-%3$d">%3$d</a></span>';
-    static $note_in_note_template  = ' <a href="%1$s#%2$s-note-text-%3$d">%3$d</a>';
+    static $note_in_note_template  = '&nbsp;<span class="as-note-text"><a href="%1$s#%2$s-note-text-%3$d">%3$d</a></span>';
 
     $note_number = fix_note_number($note_number, false);
     $template = $in_verse? $note_in_verse_template : $note_in_note_template;
