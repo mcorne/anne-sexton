@@ -12,10 +12,10 @@
 
 require_once 'String.php';
 
-define('FORMAT_ANCHORED_WORD'     , '~\|(.+?)\|(https?://.+?)\|~');
-define('FORMAT_NOTE_DEFINITION'   , '~(#\d+[a-z]?): +~m');
-define('FORMAT_NOTE_REFERENCE'    , '~ +(#\d+[a-z]?)~');
-define('FORMAT_OTHER_TRANSLATIONS', '~\{(.+?), *(.+?)\}~');
+define('FORMAT_ANCHORED_WORD'     , '~\|(.+?)\|(https?://.+?)\|~'); // eg |http://en.wiktionary.org/wiki/word|
+define('FORMAT_NOTE_DEFINITION'   , '~(#\d+[a-z]?): +~m')         ; // #1: the text of the note example ...
+define('FORMAT_NOTE_REFERENCE'    , '~ +(#\d+[a-z]?)~')           ; // ... a note reference example #1 in a string ...
+define('FORMAT_OTHER_TRANSLATIONS', '/~(.+?), *(.+?)~/')          ; // an example of other ~translations, interpretations~
 
 /**
  * Completes a URL with the blog domain name

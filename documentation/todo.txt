@@ -1,4 +1,2 @@
 Things to do
 ------------
-
-- leave table of contents open/close accross browser session

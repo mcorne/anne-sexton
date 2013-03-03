@@ -1,0 +1,57 @@
+<!--
+    Poems of Anne Sexton
+
+    Options widget
+
+    @author    Michel Corne
+    @copyright 2013 Michel Corne
+    @license   http://www.opensource.org/licenses/gpl-3.0.html GNU GPL v3
+-->
+
+<table>
+
+  <tr> 
+    <td style="color: #439800; font-weight: bold">Notes et renvois</td>
+    <td> 
+      <select id="as-hide-notes" onchange="hideNotes()"> 
+        <option value="" />Afficher
+        <option value="yes" />Cacher
+      </select> 
+    </td> 
+    <td> 
+      <a href="javascript:displayORhideElt('as-notes')">?</a>
+    </td>
+  </tr>
+  
+  <tr> 
+    <td colspan="3">
+      <span id="as-notes" style="display:none" class="as-help">
+        Cette option affiche ou cache les notes de bas de page et les numéros de renvoi dans le texte.
+      </span>
+    </td>
+  </tr>
+
+  <tr> 
+    <td style="color: #439800; font-weight: bold">Autres traductions</td>
+    <td> 
+      <select id="as-hide-other-translations" onchange="hideOtherTranslations()"> 
+        <option value="" />Afficher
+        <option value="yes" />Cacher
+      </select> 
+    </td> 
+    <td> 
+      <a href="javascript:displayORhideElt('as-other-translations')">?</a>
+    </td>
+  </tr>
+  
+  <tr> 
+    <td colspan="3">
+      <span id="as-other-translations" style="display:none" class="as-help">
+        Cette option souligne en pointillé (ou ne souligne pas) les autres traductions possibles d'un mot,
+        disponibles dans certains poèmes.
+        Le passage de la souris au-dessus d'un mot souligné fait apparaître les autres traductions possibles.
+      </span>
+    </td>
+  </tr>
+
+</table>

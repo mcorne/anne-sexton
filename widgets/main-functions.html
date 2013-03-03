@@ -1,0 +1,84 @@
+<!--
+    Poems of Anne Sexton
+
+    Javascript main functions widget
+
+    @author    Michel Corne
+    @copyright 2013 Michel Corne
+    @license   http://www.opensource.org/licenses/gpl-3.0.html GNU GPL v3
+-->
+
+<script type="text/javascript">
+
+var
+asStyle = 'page-skin-1';
+
+function displayEnglishTitles()
+{
+    setcookie('as-display-english-titles', 'yes');
+    hideElt('as-display-english'); 
+    displayElt('as-hide-english'); 
+    displayElt('as-english-table');
+}
+
+function displayFrenchTitles()
+{
+    setcookie('as-display-french-titles', 'yes');
+    hideElt('as-display-french'); 
+    displayElt('as-hide-french'); 
+    displayElt('as-french-table');
+}
+
+function hideEnglishTitles(){
+    setcookie('as-display-english-titles', '');
+    hideElt('as-hide-english'); 
+    displayElt('as-display-english'); 
+    hideElt('as-english-table');
+}
+
+function hideFrenchTitles(){
+    setcookie('as-display-french-titles', '');
+    hideElt('as-hide-french'); 
+    displayElt('as-display-french'); 
+    hideElt('as-french-table');
+}
+
+function hideNotes(init){
+    var selected;
+
+    selected = processSelect('as-hide-notes', init);
+    updateCssAttr(asStyle, 'span.as-note-ref', 'display', selected? 'none' : 'inline');
+    updateCssAttr(asStyle, 'table.as-notes', 'display', selected? 'none' : 'block');
+}
+
+function hideOtherTranslations(init){
+    var selected;
+
+    selected = processSelect('as-hide-other-translations', init);
+    updateCssAttr(asStyle, 'span.as-other-translation', 'borderBottomStyle', selected? 'none' : 'dotted');
+    updateCssAttr(asStyle, 'table.as-other-translations', 'display', selected? 'none' : 'block');
+}
+
+function setEnglishTitles(){
+    if (getcookie('as-display-english-titles')) {
+        displayEnglishTitles();
+    } else {
+        hideEnglishTitles();
+    }
+}
+
+function setFrenchTitles(){
+    if (getcookie('as-display-french-titles')) {
+        displayFrenchTitles();
+    } else {
+        hideFrenchTitles();
+    }
+}
+
+hideNotes(true);
+hideOtherTranslations(true);
+setEnglishTitles();
+setFrenchTitles();
+
+
+</script>

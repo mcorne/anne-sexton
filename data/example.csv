@@ -1,0 +1,30 @@
+type	english	french	notes
+title	The example	L'exemple #1	"#1: C'est la première référence à une note, qui se trouve être dans le titre,
+noter que le numéro de référence dans un vers doit toujours être précédé par un espace."
+			
+introduction	This is the first line of the introduction,	C'est la première ligne de l'introduction	
+	this is the second line of the introduction,	c'est la deuxième #2 ligne de l'introduction #3,	"#2: C'est la deuxième référence.
+#3: C'est la troisième référence, un vers peut avoir plusieurs références."
+	this is the third line of the introduction.	c'est la troisième ligne #3a de l'introduction.	#3a: Une référence est généralement un nombre, auquel on peut ajouter une lettre.
+			
+strophe	This is the first line of the first strophe,	C'est la première ligne de la première #5 strophe,	"#5: Les numéros des références peuvent ne pas se suivre,
+noter que les numéros de références sont recalculés et ordonnés automatiquement."
+	this is the second line of the first strophe !	c'est la deuxième ligne #4 de la première strophe !	#4: C'est la quatrième référence, une référence peut être utilisée plusieurs fois, comme dans le vers ci-dessous.
+	this is the third line of the first strophe ?	c'est la troisième ligne #4 de la première strophe ?	
+			
+strophe	This is the first line of the second strophe,	C'est la première ligne de la deuxième #6 strophe,	#6: Cette note fait référence à la note #2.
+	this is the second line of the second strophe,	c'est la ~deuxième, 2ème, suivante~ ligne de la deuxième strophe #7,	"#7: On peut proposer d'autres traductions d'un mot / groupe de mots dans un vers, par exemple :
+« 2ème » et « suivante » pour « deuxième » ;
+le mot « deuxième » sera souligné avec des pointillés, et les autres traductions seront affichées en passant la souris dessus."
+	this is the third line of the second strophe.	c'est la troisième ligne de la deuxième strophe #8.	"#8: Voici un exemple de {mot} entouré d'accolades qui ne sera pas traduit par google si la page est traduite dans une autre langue ; noter qu'il n'est pas nécessaire d'entourer le titre et les vers en anglais avec des accolades.
+Voici maintenant un exemple de |lien|http://...| sur un mot."
+			
+source	The example, 2010.	L'exemple, 01/2010.	
+			
+url	2010/01/example.html		
+image-src	http://... picasweb embed image thumbnail 144px		
+image-href	http://... picasaweb link		
+			
+other	Autres ressources	"Ceci est un exemple de ressources
+sur plusieurs lignes"	
+	Plus d'info	Ceci est un exemple d'infos supplémentaires	

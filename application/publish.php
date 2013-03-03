@@ -29,6 +29,7 @@ $help =
 -p password     Blogger account Password.
 -t              Update the table of contents widget.
 -u name         Blogger user/email/login name.
+-v              Verify the HTML generation of data/poems/example.html.
 
 Notes:
 In logged on mode, the poem HTML is created/updated in the messages directory.
@@ -46,7 +47,7 @@ publish -n 10
 ';
 
 try {
-    if (! $options = getopt("hacln:p:tu:")) {
+    if (! $options = getopt("hacln:p:tu:v")) {
         throw new Exception('invalid or missing option(s)');
     }
 
@@ -55,18 +56,25 @@ try {
         exit(sprintf($help, OPTION_A));
     }
 
-    if (isset($options['a'])) {
-        // this is the (combined) option A, adds the options
-        preg_match_all('~\w~', (string)OPTION_A, $matches);
-        $options += array_fill_keys($matches[0], false);
-        unset($options['a']);
-    }
-
     if (isset($options['l'])) {
         // displays the list of poems
         require_once 'list-poems.php';
         exec_list_poems();
         exit;
+    }
+
+    if (isset($options['v'])) {
+        // displays the list of poems
+        require_once 'publish-poems.php';
+        exec_verify_example();
+        exit;
+    }
+
+    if (isset($options['a'])) {
+        // this is the (combined) option A, adds the options
+        preg_match_all('~\w~', (string)OPTION_A, $matches);
+        $options += array_fill_keys($matches[0], false);
+        unset($options['a']);
     }
 
     if (isset($options['u']) and isset($options['p'])) {

@@ -53,7 +53,7 @@ function check_no_unprocessed_special_characters($string)
 /**
  * Main function to publish poems
  */
- function exec_publish_poems($user, $password, $numbers)
+function exec_publish_poems($user, $password, $numbers)
 {
     $poems = get_poems();
     $htmls = make_messages($poems, $numbers);
@@ -64,7 +64,7 @@ function check_no_unprocessed_special_characters($string)
 /**
  * Main function to save a poem as a draft
  */
- function exec_save_draft($number)
+function exec_save_draft($number)
 {
     $poems = get_poems();
 
@@ -74,6 +74,31 @@ function check_no_unprocessed_special_characters($string)
 
     $html = make_message($poems, $number);
     echo "\n" . save_temp_message($html, $number) . "\n";
+}
+
+/**
+ * Main function to verify the HTML generation of example poem
+ */
+function exec_verify_example()
+{
+    $poems[]['url']['english'] = '2010/01/abc.html';
+    $poems[] = parse_file(__DIR__ . "/../data/example.csv");
+    $poems = add_domain_to_urls($poems);
+
+    $html = make_message($poems, 1);
+    save_temp_message($html, 1);
+
+    $prevHtml = read_file(__DIR__ . '/../messages/verification-DO-NOT-REMOVE.html');
+
+    if (remove_generated_date($html) == remove_generated_date($prevHtml)) {
+        $result = 'The verification was successful.';
+    } else {
+        $result[] = 'The verification failed.';
+        $result[] = 'Compare "messages/verification-DO-NOT-REMOVE.html" and "messages/temp.html" to find the difference.';
+        $result[] = 'Fix accordingly.';
+    }
+
+    echo "\n" . implode("\n", (array) $result) . "\n";
 }
 
 /**
@@ -193,6 +218,17 @@ function make_french_verse($verse, $url, $note_prefix, $is_note)
     check_no_unprocessed_special_characters($verse);
 
     return $verse;
+}
+
+/**
+ * Make an HTML reference
+ *
+ * @param string $url
+ * @return string
+ */
+function make_href($url)
+{
+    return sprintf('href="%s"', $url);
 }
 
 /**
@@ -320,8 +356,17 @@ function make_message($poems, $number)
         $other_sources = '';
     }
 
-    $previous_poem = isset($poems[$number - 1]['url']['english'])? $poems[$number - 1]['url']['english'] : '';
-    $next_poem     = isset($poems[$number + 1]['url']['english'])? $poems[$number + 1]['url']['english'] : '';
+    if (isset($poems[$number - 1]['url']['english'])) {
+        $previous_poem = make_href($poems[$number - 1]['url']['english']);
+    } else {
+        $previous_poem = '';
+    }
+
+    if (isset($poems[$number + 1]['url']['english'])) {
+        $next_poem = make_href($poems[$number + 1]['url']['english']);
+    } else {
+        $next_poem = '';
+    }
 
     $html = sprintf($template,
         remove_special_characters($poem['title']['french']),
