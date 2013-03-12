@@ -21,17 +21,14 @@ define('FORMAT_OTHER_TRANSLATIONS', '/~(.+?), *(.+?)~/')          ; // an exampl
  * Completes a URL with the blog domain name
  *
  * @param string $url
+ * @param string $basename
  * @throws Exception
  * @return string
  */
-function add_domain_to_url($url)
+function add_domain_to_url($url, $basename)
 {
-    if (empty($url)) {
-        return null;
-    }
-
     if (! preg_match('~20\d\d/\d\d/[a-z-]+\.html~', $url)) {
-        throw new Exception("bad url $url");
+        throw new Exception("bad url: $url in: $basename");
     }
 
     return "http://anne-sexton.blogspot.com/$url";
@@ -46,11 +43,17 @@ function add_domain_to_url($url)
 function add_domain_to_urls($poems)
 {
     foreach($poems as &$poem) {
+        if (isset($poem['translation-in-progress'])) {
+            $poem['url']['english']        = '2011/04/traduction-en-cours.html';
+            $poem['image-src']['english']  = 'https://lh4.googleusercontent.com/-Naquy_d9nmk/UT8ps-1525I/AAAAAAAAE_0/uHyYSwnN3ng/s144/z-traduction-en-cours.jpg';
+            $poem['image-href']['english'] = 'https://picasaweb.google.com/lh/photo/UP0pnJ65khh48J2D-xHd-dMTjNZETYmyPJy0liipFm0?feat=directlink';
+        }
+
         if (empty($poem['url']['english'])) {
             throw new Exception('missing blog message URL in: ' . $poem['basename']);
         }
 
-        $poem['url']['english'] = add_domain_to_url($poem['url']['english']);
+        $poem['url']['english'] = add_domain_to_url($poem['url']['english'], $poem['basename']);
     }
 
     return $poems;
@@ -203,6 +206,23 @@ function index_rows($rows, $column_header, $basename, $non_unique_indexes = null
 }
 
 /**
+ * Checks if there is a translation in progress
+ *
+ * @param array $poems
+ * @return boolean
+ */
+function is_translation_in_progress($poems)
+{
+    foreach($poems as $poem) {
+        if (isset($poem['translation-in-progress'])) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
  * Loads an HTML template
  *
  * @param string $basename The base name of the template
@@ -340,7 +360,7 @@ function remove_anchored_words($string)
 function remove_generated_date($html)
 {
     // removes the date in the episode being translated
-    $html = preg_replace('~^ +<input id="rdr-translation-in-progress-date" type="hidden" value=".+?"/>$~m', '', $html);
+    $html = preg_replace('~^ +<input id="as-translation-in-progress-date" type="hidden" value=".+?"/>$~m', '', $html);
     $html = preg_replace('~^\s*Generated.+?$~m', '', $html);
     $html = preg_replace('~^\s*@copyright.+?$~m', '', $html);
 

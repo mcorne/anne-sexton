@@ -59,6 +59,18 @@ function hideOtherTranslations(init){
     updateCssAttr(asStyle, 'table.as-other-translations', 'display', selected? 'none' : 'block');
 }
 
+function setMessageDate(date)
+{
+    var element;
+    
+    (element = getElement('Blog1')) &&
+    (element = element.getElementsByTagName('div')[0]) &&
+    (element = element.getElementsByTagName('div')[0]) &&
+    (element = element.getElementsByTagName('h2')[0]) &&
+    (element = element.getElementsByTagName('span')[0]) &&
+    (element.innerHTML = date);
+}
+
 function setEnglishTitles(){
     if (getcookie('as-display-english-titles')) {
         displayEnglishTitles();
@@ -75,10 +87,21 @@ function setFrenchTitles(){
     }
 }
 
+function setTranslationInProgress()
+{
+    var 
+    cookie,
+    date = getElement('as-translation-in-progress-date').value;
+    
+    if (date) {
+        setMessageDate(date);
+    }
+}
+
 hideNotes(true);
 hideOtherTranslations(true);
 setEnglishTitles();
 setFrenchTitles();
-
+setTranslationInProgress();
 
 </script>

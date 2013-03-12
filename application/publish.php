@@ -13,7 +13,7 @@
 require_once 'common.php';
 require_once 'String.php';
 
-define('OPTION_A', '-c -t');
+define('OPTION_A', '-c -i -t');
 
 /**
  * The command help
@@ -22,6 +22,8 @@ $help =
 'Usage:
 -a              Options: %1$s.
 -c              Update the copyright widget with the current year.
+-i              Update the introduction widget with or without the link
+                to the poem being translated.
 -l              Display the list of poems.
 -n number,...   Optional comma separated list of numbers of poems.
                 By default, all poems are processed.
@@ -47,7 +49,7 @@ publish -n 10
 ';
 
 try {
-    if (! $options = getopt("hacln:p:tu:v")) {
+    if (! $options = getopt("haciln:p:tu:v")) {
         throw new Exception('invalid or missing option(s)');
     }
 
@@ -96,6 +98,12 @@ try {
         // updates the copyright
         require_once 'update-copyright.php';
         exec_update_copyright();
+    }
+
+    if (isset($options['i'])) {
+        // updates the introduction
+        require_once 'update-introduction.php';
+        exec_update_introduction();
     }
 
     if (isset($options['t'])) {

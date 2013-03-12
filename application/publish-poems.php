@@ -14,6 +14,19 @@ require_once 'Blog.php';
 require_once 'common.php';
 
 /**
+ * Creates the HTML translation in progress intro for the poem being translated
+ *
+ * @return string The HTML intro
+ */
+function add_translation_in_progress_intro()
+{
+    $template = load_template('translation-in-progress-intro.html');
+    $date = make_message_date();
+
+    return sprintf($template, $date);
+}
+
+/**
  * Check mandatory items are present in a a poem
  *
  * @param array $poem
@@ -319,6 +332,66 @@ function make_line_notes($notes, $url, $note_prefix)
 }
 
 /**
+ * Creates the HTML for a link to the next poem
+ *
+ * @param array $poems
+ * @param int $number
+ * @return string
+ */
+function make_link_to_next_poem($poems, $number)
+{
+    if (isset($poems[$number]['translation-in-progress'])) {
+        // this is the poem being translated, no link is made from this poem
+        return '';
+    }
+
+    $number++;
+
+    if (isset($poems[$number]['translation-in-progress'])) {
+        // the next poem is being translated, skips the poem (no link is made to the poem being translated)
+        $number++;
+    }
+
+    if (isset($poems[$number]['url']['english'])) {
+        $next_poem = make_href($poems[$number]['url']['english']);
+    } else {
+        $next_poem = '';
+    }
+
+    return $next_poem;
+}
+
+/**
+ * Creates the HTML for a link to the previous poem
+ *
+ * @param array $poems
+ * @param int $number
+ * @return string
+ */
+function make_link_to_previous_poem($poems, $number)
+{
+    if (isset($poems[$number]['translation-in-progress'])) {
+        // this is the poem being translated, no link is made from this poem
+        return '';
+    }
+
+    $number--;
+
+    if (isset($poems[$number]['translation-in-progress'])) {
+        // the previous poem is being translated, skips the poem (no link is made to the poem being translated)
+        $number--;
+    }
+
+    if (isset($poems[$number]['url']['english'])) {
+        $previous_poem = make_href($poems[$number]['url']['english']);
+    } else {
+        $previous_poem = '';
+    }
+
+    return $previous_poem;
+}
+
+/**
  * Creates the HTML of a blog message containing a poem
  *
  * @param array $poem The poem details
@@ -356,22 +429,16 @@ function make_message($poems, $number)
         $other_sources = '';
     }
 
-    if (isset($poems[$number - 1]['url']['english'])) {
-        $previous_poem = make_href($poems[$number - 1]['url']['english']);
-    } else {
-        $previous_poem = '';
-    }
+    $previous_poem = make_link_to_previous_poem($poems, $number);
+    $next_poem     = make_link_to_next_poem($poems, $number);
 
-    if (isset($poems[$number + 1]['url']['english'])) {
-        $next_poem = make_href($poems[$number + 1]['url']['english']);
-    } else {
-        $next_poem = '';
-    }
+    $translation_in_progress_intro = isset($poem['translation-in-progress'])? add_translation_in_progress_intro() : '';
 
     $html = sprintf($template,
         remove_special_characters($poem['title']['french']),
         date('c'), // generation date
         date('Y'), // copyright year
+        $translation_in_progress_intro,
         $previous_poem,
         $next_poem,
         $french_title,
@@ -413,6 +480,20 @@ function make_messages($poems, $numbers)
     }
 
     return $htmls;
+}
+
+/**
+ * Formats the current date as in a blog message
+ *
+ * @return string The date
+ */
+function make_message_date()
+{
+    setlocale(LC_TIME, 'fr_FR', 'fra');
+    $format = stripos(PHP_OS, 'win') !== false ? '%A %#d %B %Y' : '%A %e %B %Y';
+    $date = strftime($format);
+
+    return mb_convert_encoding($date, 'UTF-8');
 }
 
 /**

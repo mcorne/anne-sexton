@@ -35,11 +35,13 @@ function make_table_of_contents($poems, $language)
     $table_of_contents = array();
 
     foreach($poems as $poem) {
-        if (empty($poem['title'][$language]) or empty($poem['url']['english'])) {
-            throw new Exception('empty title in a poem');
-        }
+        if (! isset($poem['translation-in-progress'])) {
+            if (empty($poem['title'][$language]) or empty($poem['url']['english'])) {
+                throw new Exception('empty title in a poem');
+            }
 
-        $table_of_contents[] = make_table_of_contents_entry($poem['title'][$language], $poem['url']['english']);
+            $table_of_contents[] = make_table_of_contents_entry($poem['title'][$language], $poem['url']['english']);
+        }
     }
 
     return implode("\n", $table_of_contents);
