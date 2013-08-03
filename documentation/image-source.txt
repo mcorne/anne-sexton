@@ -6,4 +6,5 @@ stone-man.jpg                         => http://flash.popphoto.com/blog/images/2
 the-moss-of-his-skin.jpg              => http://img.metro.co.uk/i/pix/2009/03/Treehead4REX_450x300.jpg
 van-gogh-starry-night.jpg             => http://fr.wikipedia.org/wiki/Fichier:Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg
 woman-lying-in-the-grass-at-night.jpg => http://static7.depositphotos.com/1006889/699/i/950/depositphotos_6995844-Sexy-girl-lying-on-grass.jpg
+woman-wanting-to-die.jpg              => http://translitmag.com/image006.jpg
 z-traduction-en-cours.jpg             => http://www.moco-gu.com/Portals/0/Images/Work_in_progress.png

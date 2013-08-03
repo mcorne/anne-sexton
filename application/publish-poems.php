@@ -599,7 +599,7 @@ function make_note_references($verse, $url, $note_prefix, $is_note, $in_verse)
     foreach($matches as $match) {
         list($untrimmed_note_number, $note_number) = $match;
         $note_reference = make_note_reference($note_number, $url, $note_prefix, $in_verse);
-        $verse = str_replace($untrimmed_note_number, $note_reference, $verse);
+        $verse = preg_replace("~$untrimmed_note_number(?![a-z])~", $note_reference, $verse);
     }
 
     return $verse;
