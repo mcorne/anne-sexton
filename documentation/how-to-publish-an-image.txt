@@ -1,0 +1,40 @@
+How to publish the image of a new poem
+-----------------------------------------
+
+
+1. Find a picture
+-----------------
+
+- find a picture on the internet or in a book
+- verify if possible that the picture has no copyright restriction
+
+
+2. Edit the image
+-----------------
+
+- resize the image to no bigger than 800 X 600 px, the width should greater than the height
+- apply the automatic gamma correction, the automatic contrast correction, etc... as needed
+- give the image an explicit name, ideally the poem title
+- save the image locally in the "images" directory as .jpg
+
+Note that this is the image that will be played in the slideshow and published along with the text of the poem. 
+
+
+3. Save the edited image to picasaweb
+-------------------------------------
+
+- save the original image scan to the album "Anne Sexton" (add the photo):
+  https://picasaweb.google.com/109570780620280936353/AnneSexton
+- sort the album (organize /sort photos by filename / done)
+- add a caption (actions / caption)
+
+Adding a caption:
+- copy & paste the caption of the previous image to use as model
+- change the poem title to the actual poem title
+- select a few lines of the translated poem that relates to the image, copy & paste those lines in place of the "model" lines 
+
+
+4. Save the image source URL
+----------------------------
+
+- add the image source URL in documentation/image-sources.txt

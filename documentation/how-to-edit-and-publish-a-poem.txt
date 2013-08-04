@@ -1,0 +1,102 @@
+How to edit and publish a poem
+------------------------------
+
+All steps are mandatory for a new poem.
+Steps 1, 3, 4, 7 are not applicable for an existing poem.
+
+
+1. Create the .csv poem file
+----------------------------
+
+(not applicable to an existing poem)
+- copy and paste "data/example.csv" into "data/poems"
+- rename "data/poems/example.csv" into "data/poems/<poem-french-title>.csv"
+
+
+2. Open "<poem-french-title>.csv" in the "data" directory with OpenOffice
+-------------------------------------------------------------------------
+
+Set the options:
+- charset = UTF-8
+- cell separator = tab (tabulation)
+- text delimiter = " (double-quote)
+
+
+3. Add the original English text
+--------------------------------
+
+(not applicable to an existing poem)
+- look for the original text on the internet  
+- copy and paste the "title", the "introduction" if any, and each "strophe" in the "english" column
+  see an example of "introduction" in "la-mousse-de-sa-peau.html"
+- verify the text in the paper edition "The Complete Poems" by Anne Sexton, Houghton Mifflin
+
+
+4. Translate into French
+------------------------
+
+(not applicable to an existing poem)
+- copy and paste the English text into google translate
+- copy and paste the (roughly) translated text into the "french" column
+- update the "source" for both English and French columns
+  make a link to the English text if it comes from an authority site, eg http://www.poetryfoundation.org
+  see the "source" in "la-mousse-de-sa-peau.html" as an example
+
+  
+5. Fix the translation
+-----------------------
+
+- fix the translation
+- add "notes" as needed in the "notes" column, and "note references" within the French text
+  see examples of notes in "data/example.csv"
+- read aloud, the translation must "flow" naturally although remaining close to the original text 
+  according to the translating guidelines in "widgets\introduction.html"
+
+
+6. Complete the poem information
+--------------------------------
+
+(mandatory for a new poem)
+- add "other" information if necessary
+  see examples of links to analysis of the text in "la-mousse-de-sa-peau.html"
+- add the url to the episode image in the "image-src" cell, see below.
+- add the url to the original image in the "image-href" cell, see below.
+
+How to find the url's of the poem image:
+- open the album "Anne Sexton":
+  https://picasaweb.google.com/109570780620280936353/AnneSexton
+- select the image
+- click on "link to this photo"
+- "select size" = "small 144px"
+- check "image only (no link)"
+- copy & paste the content of the "embed image" box into the "image-src" cell (see above)
+- copy & paste the content of the "link" box into the "image-href" cell (see above)
+
+
+7. Create the blog message
+--------------------------
+
+(not applicable to an existing poem)
+- use the French title for the poem
+- create an empty blog message with this title
+
+Note that at this point, this message becomes the entry point of the blog, so the (current) publishing should ideally be done quickly.
+
+
+8. Publish the poem
+-------------------
+
+- make sure "translation-in-progress" is present in the "type" column if the poem is to be published as translation in progress
+  or remove "translation-in-progress" if the poem is to be published in its blog message
+- save and close the file, do not change the CSV format settings and extension
+- run the command line: publish -u <login> -p <password> -a
+- copy & paste the content of "widgets/introduction.html" to the corresponding blog widget if it was updated
+- copy & paste the content of "widgets/table-of-contents.html" to the corresponding blog widget if it was updated
+- copy & paste the content of "widgets/copyright.html" to the corresponding blog widget, 
+  this should only be necessary once every year when publishing the first poem of a year
+
+
+9. Miscellaneous
+----------------
+
+- anything may be fixed in any poem, publish as explained in step 8 to automatically publish all changes
