@@ -44,9 +44,15 @@ function add_domain_to_urls($poems)
 {
     foreach($poems as &$poem) {
         if (isset($poem['translation-in-progress'])) {
-            $poem['url']['english']        = '2011/04/traduction-en-cours.html';
-            $poem['image-src']['english']  = 'https://lh4.googleusercontent.com/-Naquy_d9nmk/UT8ps-1525I/AAAAAAAAE_0/uHyYSwnN3ng/s144/z-traduction-en-cours.jpg';
-            $poem['image-href']['english'] = 'https://picasaweb.google.com/lh/photo/UP0pnJ65khh48J2D-xHd-dMTjNZETYmyPJy0liipFm0?feat=directlink';
+            $poem['url']['english'] = '2011/04/traduction-en-cours.html';
+
+            if (empty($poem['image-src']['english'])) {
+                $poem['image-src']['english'] = 'https://lh4.googleusercontent.com/-Naquy_d9nmk/UT8ps-1525I/AAAAAAAAE_0/uHyYSwnN3ng/s144/z-traduction-en-cours.jpg';
+            }
+
+            if (empty($poem['image-href']['english'])) {
+                $poem['image-href']['english'] = 'https://picasaweb.google.com/lh/photo/UP0pnJ65khh48J2D-xHd-dMTjNZETYmyPJy0liipFm0?feat=directlink';
+            }
         }
 
         if (empty($poem['url']['english'])) {
