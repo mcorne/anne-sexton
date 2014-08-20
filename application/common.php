@@ -5,17 +5,18 @@
  * Common functions
  *
  * @author    Michel Corne <mcorne@yahoo.com>
- * @copyright 2013 Michel Corne
+ * @copyright 2014 Michel Corne
  * @license   http://www.opensource.org/licenses/gpl-3.0.html GNU GPL v3
  * @link      http://anne-sexton.blogspot.com
  */
 
 require_once 'String.php';
 
-define('FORMAT_ANCHORED_WORD'     , '~\|(.+?)\|(https?://.+?)\|~'); // eg |http://en.wiktionary.org/wiki/word|
-define('FORMAT_NOTE_DEFINITION'   , '~(#\d+[a-z]?): +~m')         ; // #1: the text of the note example ...
-define('FORMAT_NOTE_REFERENCE'    , '~ +(#\d+[a-z]?)~')           ; // ... a note reference example #1 in a string ...
-define('FORMAT_OTHER_TRANSLATIONS', '/~(.+?), *(.+?)~/')          ; // an example of other ~translations, interpretations~
+define('FORMAT_ANCHORED_WORD'     , '~\|(.+?)\|(https?://.+?)\|~');     // eg |a word|http://en.wiktionary.org/wiki/word|
+define('FORMAT_ARCHIVE_LINK'      , '~\|_ARCHIVE_\|(https?://.+?)\|~'); // eg |_ARCHIVE_|https://docs.google.com/document/d/1jyq/edit?usp=sharing|
+define('FORMAT_NOTE_DEFINITION'   , '~(#\d+[a-z]?): +~m')         ;     // #1: the text of the note example ...
+define('FORMAT_NOTE_REFERENCE'    , '~ +(#\d+[a-z]?)~')           ;     // ... a note reference example #1 in a string ...
+define('FORMAT_OTHER_TRANSLATIONS', '/~(.+?), *(.+?)~/')          ;     // an example of other ~translations, interpretations~
 
 /**
  * Completes a URL with the blog domain name

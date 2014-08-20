@@ -26,7 +26,7 @@ image-src	http://... picasweb embed image thumbnail 144px
 image-href	http://... picasaweb link		
 			
 other	Autres ressources	"Ceci est un exemple de ressources
-sur plusieurs lignes"	
+sur plusieurs lignes |_ARCHIVE_|https://drive.google.com/...|"	Voici un exemple de lien sur un fichier archivé [a].
 	Plus d'info	Ceci est un exemple d'infos supplémentaires	
 			
 translation-in-progress		doit être présent uniquement tant que la traduction est en cours	

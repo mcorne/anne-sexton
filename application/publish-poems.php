@@ -5,7 +5,7 @@
  * Command to publish poems
  *
  * @author    Michel Corne <mcorne@yahoo.com>
- * @copyright 2013 Michel Corne
+ * @copyright 2014 Michel Corne
  * @license   http://www.opensource.org/licenses/gpl-3.0.html GNU GPL v3
  * @link      http://anne-sexton.blogspot.com
  */
@@ -189,7 +189,10 @@ function fix_string($string)
  */
 function make_anchored_words($string)
 {
-    return preg_replace(FORMAT_ANCHORED_WORD, '<a href="$2">$1</a>', $string);
+    $string = preg_replace(FORMAT_ARCHIVE_LINK, '[<a href="$1" title="Archive">a</a>]', $string);
+    $string = preg_replace(FORMAT_ANCHORED_WORD, '<a href="$2">$1</a>', $string);
+
+    return $string;
 }
 
 /**
