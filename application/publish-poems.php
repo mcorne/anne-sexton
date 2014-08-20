@@ -702,7 +702,9 @@ function save_message($html, $poem, Blog $blog, $number)
         // removes line breaks because Blogger replaces them with <br> for some reason which screws up the display
         // although messages are set to use HTML as it is and to use <br> for line feeds
         $content = str_replace("\n", ' ', $html);
-        $blog->savePost($poem['title']['french'], $content, $url);
+        // removes references from the mesage title
+        $title = preg_replace('~ #\d+~', '', $poem['title']['french']);
+        $blog->savePost($title, $content, $url);
         write_file($file, $html);
         $isPublished = true;
 
