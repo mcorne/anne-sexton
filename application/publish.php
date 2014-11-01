@@ -49,6 +49,8 @@ publish -n 10
 ';
 
 try {
+    date_default_timezone_set('UTC');
+    
     if (! $options = getopt("haciln:p:tu:v")) {
         throw new Exception('invalid or missing option(s)');
     }
