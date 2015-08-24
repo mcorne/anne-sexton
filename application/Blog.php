@@ -1,216 +1,384 @@
 <?php
 /**
- * Poems of Anne Sexton
- *
  * Processing of blog messages
  *
  * @author    Michel Corne <mcorne@yahoo.com>
- * @copyright 2013 Michel Corne
+ * @copyright 2015 Michel Corne
  * @license   http://www.opensource.org/licenses/gpl-3.0.html GNU GPL v3
- * @link      http://anne-sexton.blogspot.com
  */
-
-require_once 'Zend/Gdata.php';
-require_once 'Zend/Gdata/ClientLogin.php';
-require_once 'Zend/Gdata/Query.php';
 
 class Blog
 {
     /**
-     * Maximum number of messages retrieves
+     * The blog ID
      *
-     * @var int
+     * Tbe blog ID MUST BE DEFINED IN "blog_id.php" in the same directory
+     *
+     * @var string
+     * @see self::__construct()
      */
-    const MAX_MESSAGES = 500;
+    public $blogId;
 
     /**
-     * The blog ID
+     * The encryption key used to encrypt the client ID and secret in "credentials.php"
      *
      * @var string
      */
-    protected $_blogId;
+    public $encryptionKey;
 
     /**
-     * The client object
+     * The encryption IV used by the encryption algorythm
      *
-     * @var Zend_Gdata
+     * @var type
+     * @see self::decryptString() and self::encryptString()
      */
-    protected $_client;
+    public $encryptionIv = '7459589619995061';
 
     /**
-     * The list of blog messages
+     * Name of the temporary file where authorization tokens are stored
      *
-     * @var array
+     * @var string
      */
-    protected $_feeds = array();
+    public $tokensFilename;
 
     /**
-     * The constructor
+     * Sets the encryption key and token storage file name
      *
-     * @param string $user     The Blogger account user name
-     * @param string $password The Blogger account password
-     * @param string $title    The blog title
+     * @param string $user
+     * @param string $password
      */
-    public function __construct($user = null, $password = null, $title = null)
+    public function __construct($user, $password)
     {
-        if ($user and $password) {
-            $this->getClient($user, $password);
-
-            if ($title) {
-                $this->getBlogId($title);
-            }
-        }
+        $this->blogId = require 'blog_id.php';
+        $this->encryptionKey  = $this->setEncryptionKey($user, $password);
+        $this->tokensFilename = $this->getTokensFilename();
     }
 
     /**
-     * Creates a blog message
+     * Gets and stores the authorization tokens
      *
-     * @param string $title   The message title
-     * @param string $content The message content
-     * @param string $label   The message label aka category
-     * @return string         The message ID
+     * @param string $authorizationCode
      */
-    public function createPost($title, $content, $label = null)
+    public function authorize($authorizationCode)
     {
-        $uri = 'http://www.blogger.com/feeds/' . $this->_blogId . '/posts/default';
-
-        $entry = $this->_client->newEntry();
-        $entry->title = $this->_client->newTitle($title);
-        $entry->content = $this->_client->newContent($content);
-        $entry->content->setType('text');
-
-        if ($label) {
-            $category = $this->_client->newCategory($label, 'http://www.blogger.com/atom/ns#');
-            $entry->setCategory(array($category));
-        }
-
-        $post = $this->_client->insertEntry($entry, $uri);
-        list(,, $postId) = explode('-', $post->id->text);
-
-        return $postId;
+        $tokens = $this->getTokens($authorizationCode);
+        $this->writeTokens($tokens);
     }
 
     /**
-     * Returns the blog ID
+     * Calls the Blogger API
      *
-     * @param string $title The blog title
+     * @param array $options
+     * @return array
      * @throws Exception
      */
-    public function getBlogId($title)
+    public function callBloggerApi(array $options)
     {
-        $uri = 'http://www.blogger.com/feeds/default/blogs';
+        $options += [
+            CURLOPT_HEADER         => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+        ];
 
-        if (! $this->_blogId = $this->getFeedEntry($uri, $title)) {
-            throw new Exception('invalid blog');
-        }
-    }
+        $ch = curl_init();
 
-    /**
-     * Sets a client instance aka logs into Blogger
-     *
-     * @param string $user     The Blogger account user name
-     * @param string $password The Blogger account password
-     */
-    public function getClient($user, $password)
-    {
-        $client = Zend_Gdata_ClientLogin::getHttpClient(
-            $user, $password, 'blogger', null,
-            Zend_Gdata_ClientLogin::DEFAULT_SOURCE, null, null,
-            Zend_Gdata_ClientLogin::CLIENTLOGIN_URI, 'GOOGLE');
-
-        $this->_client = new Zend_Gdata($client);
-    }
-
-    /**
-     * Returs a message ID by its title or URL
-     *
-     * @param string $uri        The URI of the blog feed
-     * @param string $titleOrUrl The title or URL of the message
-     * @return string            The message ID
-     */
-    public function getFeedEntry($uri, $titleOrUrl)
-    {
-        if (!isset($this->_feeds[$uri])) {
-            // gets and saves the list of blog messages
-            $query = new Zend_Gdata_Query($uri);
-            $query->setMaxResults(self::MAX_MESSAGES);
-            $this->_feeds[$uri] = $this->_client->getFeed($query);
+        if (! curl_setopt_array($ch, $options)) {
+            throw new Exception('cannot set curl options: ' . curl_error($ch));
         }
 
-        foreach($this->_feeds[$uri]->entries as $entry) {
-            if ($entry->getTitleValue() == $titleOrUrl or $entry->getAlternateLink()->href == $titleOrUrl) {
-                // the message was found by its title or URL
-                $idText = explode('-', $entry->id->text);
+        if (! $response = curl_exec($ch)) {
+            throw new Exception('cannot execute curl: ' . curl_error($ch));
+        }
 
-                return $idText[2];
+        if (! $info = curl_getinfo($ch)) {
+            throw new Exception('cannot get curl info: ' . curl_error($ch));
+        }
+
+        if ($info['http_code'] == 401) {
+            throw new Exception('Invalid tokens! Please run "authorize -h"');
+        }
+
+        if ($info['http_code'] != 200) {
+            if (strpos($response, 'invalid_grant')) {
+                throw new Exception('Invalid authorization! Please run "authorize -h"');
             }
+
+            $response = preg_replace('~\s+~', ' ', $response);
+            throw new Exception('http error: ' . $response);
         }
 
-        return null;
-    }
-
-    /**
-     * Returns the message ID
-     *
-     * @param string $url The blog message URL
-     * @return string     The message ID
-     */
-    public function getPostId($url)
-    {
-        $uri = 'http://www.blogger.com/feeds/' . $this->_blogId . '/posts/default';
-
-        return $this->getFeedEntry($uri, $url);
-    }
-
-    /**
-     * Updates a blog message
-     *
-     * @param string $title   The message title
-     * @param string $content The message content
-     * @param string $label   The message label aka category
-     * @param string $postId  The message ID
-     * @return string         The message ID
-     */
-    public function updatePost($title, $content, $label, $postId)
-    {
-        $uri = 'http://www.blogger.com/feeds/' . $this->_blogId . '/posts/default/' . $postId;
-        $query = new Zend_Gdata_Query($uri);
-        $entry = $this->_client->getEntry($query);
-        $entry->content->text = $this->_client->newContent($content);
-        $entry->title = $this->_client->newTitle($title);
-
-        if ($label) {
-            $category = $this->_client->newCategory($label, 'http://www.blogger.com/atom/ns#');
-            $entry->setCategory(array($category));
+        if (! $decoded = json_decode($response, true)) {
+            $response = preg_replace('~\s+~', ' ', $response);
+            throw new Exception('cannot json decode response: ' . $response);
         }
 
-        $control = $this->_client->newControl();
-        $draft = $this->_client->newDraft('no');
-        $control->setDraft($draft);
-        $entry->control = $control;
+        curl_close($ch);
 
-        $post = $entry->save();
-
-        return $postId;
+        return $decoded;
     }
 
     /**
-     * Creates or updates a blog message
+     * Decrypts a string
      *
-     * @param string $title   The message title
-     * @param string $content The message content
-     * @param string $url     The blog message URL
-     * @param string $label   The message label aka category
-     * @return string         The message ID
+     * @param string $base64
+     * @return string
+     * @throws Exception
      */
-    public function savePost($title, $content, $url, $label = null)
+    public function decryptString($base64)
     {
-        if ($postId = $this->getPostId($url)) {
-            $this->updatePost($title, $content, $label, $postId);
+        if (! $encrypted = base64_decode($base64)) {
+            throw new Exception('cannot base64 decode string');
+        }
+
+        if (! $decrypted = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->encryptionKey, $encrypted, MCRYPT_MODE_CBC, $this->encryptionIv)) {
+            throw new Exception('cannot decrypt string');
+        }
+
+        $decrypted = rtrim($decrypted, "\0");
+
+        return $decrypted;
+    }
+
+    /**
+     * Encrypts a string
+     *
+     * @param string $string
+     * @return string
+     * @throws Exception
+     */
+    public function encryptString($string)
+    {
+        if (! $encrypted = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->encryptionKey, $string, MCRYPT_MODE_CBC, $this->encryptionIv)) {
+            throw new Exception('cannot encrypt string');
+        }
+
+        if (! $base64 = base64_encode($encrypted)) {
+            throw new Exception('cannot base64 encode string');
+        }
+
+        return $base64;
+    }
+
+    /**
+     * Reads and decrypts the credentials
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getCredentials()
+    {
+        $filename = __DIR__ . '/credentials.php';
+
+        if (! file_exists($filename)) {
+            throw new Exception('credentials file missing: ' . $filename);
+        }
+
+        $credentials = require_once $filename;
+
+        $credentials['client_id']     = $this->decryptString($credentials['client_id']);
+        $credentials['client_secret'] = $this->decryptString($credentials['client_secret']);
+
+        $credentials['auth_screen_url'] = sprintf($credentials['auth_screen_url_tpl'], $credentials['client_id'], $credentials['redirect_uri']);
+
+        return $credentials;
+    }
+
+    /**
+     * Returns a message post ID
+     *
+     * @param string $postPath
+     * @param string $tokenType
+     * @param string $accessToken
+     * @return string
+     * @throws Exception
+     */
+    public function getPostId($postPath, $tokenType, $accessToken)
+    {
+        $header[] = sprintf('Authorization: %s %s', $tokenType, $accessToken);
+
+        $postPath = urlencode($postPath);
+        $url = sprintf('https://www.googleapis.com/blogger/v3/blogs/%s/posts/bypath?path=%s', $this->blogId, $postPath);
+
+        $options = [
+            CURLOPT_CUSTOMREQUEST  => 'GET',
+            CURLOPT_HTTPHEADER     => $header,
+            CURLOPT_URL            => $url,
+        ];
+
+        $response = $this->callBloggerApi($options);
+
+        if (empty($response['id'])) {
+            throw new Exception('empty post ID');
+        }
+
+        return $response['id'];
+    }
+
+    /**
+     * Returns the authorization tokens
+     *
+     * @param string $authorizationCode
+     * @return array
+     */
+    public function getTokens($authorizationCode)
+    {
+        $credentials = $this->getCredentials();
+
+        $data = http_build_query([
+            'client_id'     => $credentials['client_id'],
+            'client_secret' => $credentials['client_secret'],
+            'code'          => $authorizationCode,
+            'grant_type'    => 'authorization_code',
+            'redirect_uri'  => $credentials['redirect_uri'],
+        ]);
+
+        $length = strlen($data);
+
+        $header = [
+            "Content-length: $length",
+            'Content-Type: application/x-www-form-urlencoded',
+        ];
+
+        $options = [
+            CURLOPT_CUSTOMREQUEST  => 'POST',
+            CURLOPT_HTTPHEADER     => $header,
+            CURLOPT_POSTFIELDS     => $data,
+            CURLOPT_URL            => 'https://www.googleapis.com/oauth2/v3/token',
+        ];
+
+        $tokens = $this->callBloggerApi($options);
+
+        return $tokens;
+    }
+
+    /**
+     * Returns the temporary token storage file name
+     *
+     * @return string
+     */
+    public function getTokensFilename()
+    {
+        $filename = sprintf('%s/blogger-api-tokens-%s.txt', sys_get_temp_dir(), $this->blogId);
+
+        return $filename;
+    }
+
+    /**
+     * Patches a message post
+     *
+     * @param string $postPath
+     * @param string $title
+     * @param string $content
+     * @param array $labels
+     * @throws Exception
+     */
+    public function patchPost($postPath, $title, $content, $labels = null)
+    {
+        $tokens = $this->readTokens();
+
+        if (empty($tokens['token_type']) or empty($tokens['access_token'])) {
+            throw new Exception('empty token_type or access_token');
+        }
+
+        $header = [
+            sprintf('Authorization: %s %s', $tokens['token_type'], $tokens['access_token']),
+            'Content-Type: application/json',
+        ];
+
+        $data = [
+            'content' => $content,
+            'title'   => $title,
+        ];
+
+        if ($labels) {
+            $data['labels'] = (array) $labels;
+        }
+
+        if (! $json = json_encode($data)) {
+            throw new Exception('cannot json encode post data');
+        }
+
+        $postId = $this->getPostId($postPath, $tokens['token_type'], $tokens['access_token']);
+        $url = sprintf('https://www.googleapis.com/blogger/v3/blogs/%s/posts/%s?publish=true', $this->blogId, $postId);
+
+        $options = [
+            CURLOPT_CUSTOMREQUEST  => 'PATCH',
+            CURLOPT_HTTPHEADER     => $header,
+            CURLOPT_POSTFIELDS     => $json,
+            CURLOPT_URL            => $url,
+        ];
+
+        $this->callBloggerApi($options);
+    }
+
+    /**
+     * Returns the authorization tokens
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function readTokens()
+    {
+        if (! file_exists($this->tokensFilename) or ! $base64 = file_get_contents($this->tokensFilename)) {
+            throw new Exception('Tokens missing! Please run "authorize -h"');
+        }
+
+        $json = $this->decryptString($base64);
+
+        if (! $tokens = json_decode($json, true)) {
+            throw new Exception('Cannot process tokens! Please enter a valid name and password');
+        }
+
+        return $tokens;
+    }
+
+    /**
+     * Sets the encryption key
+     *
+     * @param string $user
+     * @param string $password
+     * @return type
+     */
+    public function setEncryptionKey($user, $password)
+    {
+        $encryptionKey = $this->setStringTo16Bytes($password . $user);
+
+        return $encryptionKey;
+    }
+
+    /**
+     * Truncates or pads a string to 16 bits
+     *
+     * @param string $string
+     * @return string
+     */
+    public function setStringTo16Bytes($string)
+    {
+        if (strlen($string) > 16) {
+            $string = substr($string, 0, 16);
         } else {
-            $postId = $this->createPost($title, $content, $label);
+            $string = str_pad($string, 16);
         }
 
-        return $postId;
+        return $string;
+    }
+
+    /**
+     * Writes the authorization tokens in the temporary file
+     *
+     * @param array $tokens
+     * @throws Exception
+     */
+    public function writeTokens($tokens)
+    {
+        if (! $json = json_encode($tokens)) {
+            throw new Exception('cannot json encode tokens');
+        }
+
+        $encrypted = $this->encryptString($json);
+
+        if (! file_put_contents($this->tokensFilename, $encrypted)) {
+            throw new Exception('cannot write: ' . $this->tokensFilename);
+        }
     }
 }

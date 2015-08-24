@@ -70,7 +70,7 @@ function exec_publish_poems($user, $password, $numbers)
 {
     $poems = get_poems();
     $htmls = make_messages($poems, $numbers);
-    $blog = new Blog($user, $password, 'Anne Sexton');
+    $blog = new Blog($user, $password);
     echo "\n" . save_messages($htmls, $poems, $blog) . "\n";
 }
 
@@ -699,12 +699,13 @@ function save_message($html, $poem, Blog $blog, $number)
         // the poem is different from the currently saved version
         echo "$number : " . basename($url, '.html') . "\n";
 
+        $postPath = str_replace('http://anne-sexton.blogspot.com', '', $url);
         // removes line breaks because Blogger replaces them with <br> for some reason which screws up the display
         // although messages are set to use HTML as it is and to use <br> for line feeds
         $content = str_replace("\n", ' ', $html);
-        // removes references from the mesage title
+        // removes references from the message title
         $title = preg_replace('~ #\d+~', '', $poem['title']['french']);
-        $blog->savePost($title, $content, $url);
+        $blog->patchPost($postPath, $title, $content);
         write_file($file, $html);
         $isPublished = true;
 
