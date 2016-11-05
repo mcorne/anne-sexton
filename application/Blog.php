@@ -12,7 +12,7 @@ class Blog
     /**
      * The blog ID
      *
-     * Tbe blog ID MUST BE DEFINED IN "blog_id.php" in the same directory
+     * The blog ID MUST BE DEFINED IN "blog_id.php" in the same directory
      *
      * @var string
      * @see self::__construct()

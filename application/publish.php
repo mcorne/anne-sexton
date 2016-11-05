@@ -50,7 +50,7 @@ publish -n 10
 
 try {
     date_default_timezone_set('UTC');
-    
+
     if (! $options = getopt("haciln:p:tu:v")) {
         throw new Exception('invalid or missing option(s)');
     }
@@ -68,7 +68,7 @@ try {
     }
 
     if (isset($options['v'])) {
-        // displays the list of poems
+        // verifies the generation of the example poem
         require_once 'publish-poems.php';
         exec_verify_example();
         exit;

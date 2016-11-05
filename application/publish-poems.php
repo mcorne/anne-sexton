@@ -90,7 +90,7 @@ function exec_save_draft($number)
 }
 
 /**
- * Main function to verify the HTML generation of example poem
+ * Main function to verify the HTML generation of the example poem
  */
 function exec_verify_example()
 {
