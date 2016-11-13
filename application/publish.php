@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 /**
  * Poems of Anne Sexton
@@ -5,7 +6,7 @@
  * Command line to publish poems or update the table of contents
  *
  * @author    Michel Corne <mcorne@yahoo.com>
- * @copyright 2012 Michel Corne
+ * @copyright 2016 Michel Corne
  * @license   http://www.opensource.org/licenses/gpl-3.0.html GNU GPL v3
  * @link      http://anne-sexton.blogspot.com
  */

@@ -1,9 +1,10 @@
+#!/usr/bin/php
 <?php
 /**
  * Command line to authorize the publishing of blog messages
  *
  * @author    Michel Corne <mcorne@yahoo.com>
- * @copyright 2015 Michel Corne
+ * @copyright 2016 Michel Corne
  * @license   http://www.opensource.org/licenses/gpl-3.0.html GNU GPL v3
  */
 
